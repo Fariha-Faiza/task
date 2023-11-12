@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useContext, useRef } from "react";
 import { Context } from "../../context/Context";
-
+import { Link } from "react-router-dom";
 export default function Information() {
 
   const [profession, setProfession] = useState([])
@@ -13,6 +13,7 @@ export default function Information() {
   const [result, setResult] = useState("")
   const [id, setID] = useState("")
   const [error, setError] = useState(false);
+  const [success, setSuccess] = useState(false);
   const arr = ['Marketing Professional', 'Entrepreneur', 'Content Creator']
   const interestsofMP = ['Growth marketing', 'Digital Marketing', 'Product Marketing', 'Paid marketing', 'Organic marketing']
   const interestsofEnterpreneur = ['Startup enthusiast', 'SME', 'Product enthusiast', 'Product Leader', 'Product owner etc']
@@ -45,8 +46,9 @@ export default function Information() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(false);
+    setSuccess(false)
     try {
-      const res = await axios.post("/information/info", {
+      const res = await axios.post("https://replymind-se-final.onrender.com/api/information/info", {
 
         username: userName,
         email: email,
@@ -54,7 +56,7 @@ export default function Information() {
         interest: checked,
         bio
       });
-
+      setSuccess(true)
       console.log(res)
       setResult(res);
       setID(res.data._id)
@@ -121,12 +123,24 @@ export default function Information() {
             placeholder="Character count Max 50"
             onChange={e => setBio(e.target.value)} />
 
-          <button className="registerButton" type="submit" disabled={id !== null} >Save
+          <button className="registerButton" type="submit"  >Save
           </button>
+      
+
         </form>
 
-        {error && <span style={{ color: "red", marginTop: "10px" }}>Something went wrong!</span>}
+        {success && <span style={{color:"red", marginTop:"10px"}}>Save data successfully! please click on View Info to check Data</span>}
+      {error && <span style={{color:"red", marginTop:"10px"}}>Something went wrong!</span>}
 
+      <div className="register-alignment">
+      <button className="loginRegisterButton">
+
+        <Link className="link" to="/view">
+          View Info
+        </Link>
+      
+      </button>
+      </div>
       </div>
     </div>
   )

@@ -10,20 +10,23 @@ export default function Register() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState(false);
+  const [success, setSuccess] = useState(false);
   const { user, dispatch, isFetching } = useContext(Context);
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(false);
+    setSuccess(false)
     try {
-      const res = await axios.post("https://replymind-se-task.onrender.com/api/auth/register", {
+      const res = await axios.post("https://replymind-se-final.onrender.com/api/auth/register", {
       
         username,
         email,
         password,
   
       });
+      setSuccess(true)
    console.log('result', res)
-      res.data && window.location.replace("/login");
+      // res.data && window.location.replace("/login");
     } catch (err) {
       setError(true);
     }
@@ -61,12 +64,16 @@ export default function Register() {
 
           
           <button className="registerButton" type="submit" >Register</button>
-          <button className="registerLoginButton">
+         
+   
+      </form>
+      {success && <span style={{color:"red", marginTop:"10px"}}>Registration Sucessful!Please click on login button</span>}
+      {error && <span style={{color:"red", marginTop:"10px"}}>Something went wrong!</span>}
+      <div className="register-alignment">
+      <button className="registerLoginButton">
       <Link className="link" to="/login">Login</Link>
       </button>
-      </form>
-      
-      {error && <span style={{color:"red", marginTop:"10px"}}>Something went wrong!</span>}
+      </div>
       </div>
      
     </div>

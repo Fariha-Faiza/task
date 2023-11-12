@@ -4,18 +4,20 @@ import axios from "axios";
 import { useContext, useRef } from "react";
 import { Context } from "../../context/Context";
 import "./viewInformation.css"
-
+import { Link } from "react-router-dom";
 export default function ViewInformation(id1) {
     const { user } = useContext(Context);
     const [allData, setAllData] = useState([])
     const [profession, setProfession] = useState([])
     const [bio, setBio] = useState("")
     const [interest, setInterest] = useState([])
-    const [matchedId , setMatchedId] = useState("")
+    const [matchedId , setMatchedId] = useState(1)
     var [userName, setUserName] = useState("")
     var [email, setEmail] = useState("")
-
+    
     const [error, setError] = useState(false);
+    const [success, setSuccess] = useState(false);
+    const [success1, setSuccess1] = useState(false);
   const arr = ['Marketing Professional', 'Entrepreneur', 'Content Creator']
   const interestsofMP = ['Growth marketing', 'Digital Marketing', 'Product Marketing', 'Paid marketing', 'Organic marketing']
   const interestsofEnterpreneur = ['Startup enthusiast', 'SME', 'Product enthusiast', 'Product Leader', 'Product owner etc']
@@ -45,7 +47,7 @@ export default function ViewInformation(id1) {
   useEffect(() => {
     console.log("my url11111")
     async function fethcData() {
-      const res = await axios.get(`/information/info`)
+      const res = await axios.get(`https://replymind-se-final.onrender.com/api/information/info`)
     console.log("res data", res.data)
     const matchedData = (res.data.filter((x) => x.username === user.username && x.email === user.email))
          setAllData(matchedData)
@@ -63,10 +65,11 @@ export default function ViewInformation(id1) {
 //update profile info
   const handleUpdate = async (e) => {
     console.log("update profile info")
-   // e.preventDefault();
+    e.preventDefault();
     setError(false);
+    setSuccess(false)
     try {
-      const res = await axios.put(`/information/info/${matchedId}`, {
+      const res = await axios.put(`https://replymind-se-final.onrender.com/api/information/info/${matchedId}`, {
 
         username: userName,
         email: email,
@@ -74,6 +77,7 @@ export default function ViewInformation(id1) {
         interest: checked,
         bio
       });
+      setSuccess(true)
       console.log(res) 
       //res.data && window.location.replace("/view");
     } catch (err) {
@@ -83,13 +87,20 @@ export default function ViewInformation(id1) {
 
 //delete profile info
 const handleDelete= async (e) => {
-
+  e.preventDefault();
+  setError(false);
+  setSuccess1(false)
   console.log('delete');
   try {
-    const res = await axios.delete(`/information/info/${matchedId}`)
+    const res = await axios.delete(`https://replymind-se-final.onrender.com/api/information/info/${matchedId}`)
 
     
-  } catch (err) { }
+  
+  setSuccess1(true)
+  }
+   catch (err) {
+    setError(true);
+    }
 }
 
 
@@ -160,12 +171,20 @@ const handleDelete= async (e) => {
           
         </form>
        <div>
+       {success && <span style={{color:"red", marginTop:"10px"}}>Data update successful</span>}
+    
         {error && <span style={{ color: "red", marginTop: "10px" }}>Something went wrong!</span>}
         </div>
 <div>
   
-<button className="registerButton" onClick={handleDelete} > Delete Info
+<button className="registerButton"  onClick={handleDelete} > Delete Info
+
           </button>
+
+          <button className="registerLoginButton">
+      <Link className="link" to="/information">HOME</Link>
+      </button>
+          {success1 && <span style={{color:"red", marginTop:"10px"}}>Data Delete successful, Go to Home page to add info again</span>}
 </div>
           
           </div>
